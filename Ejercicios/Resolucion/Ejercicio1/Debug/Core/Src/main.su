@@ -1,4 +1,4 @@
-../Core/Src/main.c:80:6:zeros	24	static
+../Core/Src/main.c:80:6:productoEscalar32	32	static
 ../Core/Src/main.c:88:5:main	8	static
 ../Core/Src/main.c:134:6:SystemClock_Config	88	static
 ../Core/Src/main.c:180:13:MX_ETH_Init	8	static
