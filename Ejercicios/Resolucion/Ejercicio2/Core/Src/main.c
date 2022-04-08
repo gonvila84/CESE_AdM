@@ -118,6 +118,10 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+
+  uint32_t vectorIn[10] = {1,2,3,4,5,6,7,8,9,10};
+  uint32_t vectorOut[10];
+  productoEscalar32(&vectorIn,&vectorOut, 10,2);
   while (1)
   {
     /* USER CODE END WHILE */

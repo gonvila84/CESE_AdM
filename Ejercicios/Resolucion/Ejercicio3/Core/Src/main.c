@@ -117,6 +117,9 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  uint16_t vectorIn[10] = {1,2,3,4,5,6,7,8,9,10};
+  uint16_t vectorOut[10];
+  productoEscalar16(&vectorIn,&vectorOut, 10,2);
   while (1)
   {
     /* USER CODE END WHILE */
