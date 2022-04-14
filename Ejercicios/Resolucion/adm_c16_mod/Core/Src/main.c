@@ -178,8 +178,15 @@ int main(void)
   uint16_t vector_input_12 [] = {1000,2000,3000,4000,5000,10000};
   uint16_t vector_output_12 [longitud];
   uint16_t escalar_12 = 9;
-
   asm_productoEscalar12 (&vector_input_12, &vector_output_12, longitud, escalar_12);
+
+  /*Ejercicio 7 Realizar una función que reciba un vector de números signados de 32 bits y devuelva la posición del máximo del vector.*/
+  uint32_t 	vector_input_max_32 [] = {-56,-23,-388,-2,-4000};
+  uint16_t	longitud_max = 5;
+  int32_t	maxReturnValue = asm_max (vector_input_max_32, longitud_max);
+
+
+
 
   /* USER CODE END 2 */
 

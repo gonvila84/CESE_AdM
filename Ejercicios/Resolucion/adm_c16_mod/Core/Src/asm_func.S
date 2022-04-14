@@ -9,7 +9,7 @@
 .global asm_productoEscalar32
 .global asm_productoEscalar16
 .global asm_productoEscalar12
-
+.global asm_max
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 @ Prototipo en "C":
 @   void asm_svc (void)
@@ -101,24 +101,70 @@
 
 .thumb_func
     asm_productoEscalar16:
-    	ldr		r4, [r0]
+    	ldrh	r4, [r0]
     .asm_productoEscalar16_for:
 		mul		r4, r4, r3
-		str		r4,	[r1], 2
-		ldr		r4, [r0,2]!
+		strh	r4,	[r1], 2
+		ldrh	r4, [r0,2]!
         subs	r2, 1
         bne		.asm_productoEscalar16_for
         bx lr
 
-
 .thumb_func
     asm_productoEscalar12:
-    	ldr		r4, [r0]
+    	push 	{r4}
+    	ldrh	r4, [r0]
     .asm_productoEscalar12_for:
 		mul		r4, r4, r3
-		MOV 	r4, r4, LSR 4
-		str		r4,	[r1], 2
-		ldr		r4, [r0,2]!
+		mov		r5, #0x0FFF
+		and 	r4, r5
+		strh	r4,	[r1], 2
+		ldrh	r4, [r0,2]!
         subs	r2, 1
         bne		.asm_productoEscalar12_for
+        pop		{r4}
         bx lr
+
+@ 		5) Realice una función que implemente un filtro de ventana móvil de 10 valores sobre un vector de muestras.
+@
+@		void filtroVentana10(uint16_t * vectorIn, uint16_t * vectorOut, uint32_t longitudVectorIn);
+
+@		6) Realizar una función que reciba un vector de números signados de 32 bits y los “empaquete” en
+@		otro vector de 16 bits. La función deberá adecuar los valores de entrada a la nueva precisión.
+@
+@		void pack32to16 (int32_t * vectorIn, int16_t *vectorOut, uint32_t longitud);
+
+
+
+
+
+@ 7) Realizar una función que reciba un vector de números signados de 32 bits y devuelva la posición del máximo del vector.
+@
+@ Prototipo en "C":
+@		int32_t max (int32_t * vectorIn, uint32_t longitud);
+@
+@ Parametros recibidos:
+@   r0: puntero al vector de entrada
+@   r1: longitud
+
+.thumb_func
+	asm_max:
+		push	{r4}
+		mov		r4, r1
+	.asm_maximoDelVector_loop:
+		ldr 	r2,[r0],#4
+
+		cmp		r4, r1
+		IT		EQ
+		moveq	r3, r2
+
+		cmp		r3, r2
+		IT		LT
+		movlt	r3, r2
+
+		subs	r1,1						@	Descuento al valor de la longitud para decrementar el loop y actualizo flags
+		bne		.asm_maximoDelVector_loop	@	Si la resta anterior no da 0 me dirjo a una nueva iteracion
+		pop		{r4}
+		push	{r0}
+		mov		r0, r3
+		bx 		lr							@	Salgo de la funcion enviando el valor de retorno
