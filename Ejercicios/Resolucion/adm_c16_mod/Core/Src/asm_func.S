@@ -247,30 +247,30 @@
 //R4 = N
 //R5 = Direccion base de Vin
 .thumb_func
-	asm_rotatetest:
+	asm_invertir:
 		push	{r4,r5,r6,r7}
 		mov 	r2,r0	//Me guardo la direccion base
-		mov		r7,#4
+		mov		r7,#2
 		sub 	r1,1	//Decremento la longitud para hacerla coincidir con V[i] = Long-1 como ultima posicion
 		mul 	r1,r7	//Multiplico por 4 bytes, eso me da la distancia en bytes con r0
 		add 	r3,r1	//Almaceno la ultima dir de memoria V
 		mov 	r1,0	//Reutilizo r1 para cumplir la funcion de variable i del for
-		.asm_rotatetest_loop:
+		.asm_invertir_loop:
 			subs	r6, r3, r2
-			beq		.asm_rotatetest_loop_end
-			cmp		r6, 4
-			beq		.asm_rotatetest_loop_end
-			ldr		r4, [r2]
-			ldr		r5, [r3]
-			str		r4, [r3]
-			str		r5,	[r2]
+			beq		.asm_invertir_loop_end
+			cmp		r6, 2
+			beq		.asm_invertir_loop_end
+			ldrh	r4, [r2]
+			ldrh	r5, [r3]
+			strh	r4, [r3]
+			strh	r5,	[r2]
 			add		r1, 1
-			add		r2, 4
-			sub		r3, 4
-			b		.asm_rotatetest_loop
-			.asm_rotatetest_loop_end:
-			pop		{r4,r5,r6,r7}
-			bx		lr
+			add		r2, 2
+			sub		r3, 2
+			b		.asm_invertir_loop
+			.asm_invertir_loop_end:
+			pop			{r4,r5,r6,r7}
+			bx			lr
 
 
 

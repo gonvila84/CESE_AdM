@@ -82,14 +82,10 @@ int main(void)
 
 
   /*9) Realizar una función que reciba un vector de muestras no signadas de 16 bits e invierta su orden. */
-  //uint16_t asmInvertirArrayIn [] = {8,3,4,62,7,1,1};
-  //uint32_t asmInvertirLongitud = 7;
-  //asm_invertir (asmInvertirArrayIn, asmInvertirLongitud);
+  uint16_t asmInvertirArrayIn [] = {8,3,4,62,7,1,1};
+  uint32_t asmInvertirLongitud = 7;
+  asm_invertir (asmInvertirArrayIn, asmInvertirLongitud);
 
-  /*Rotate test*/
-  uint32_t asmRotateTestArrayIn [] = {8,3,4,62,7,1,1};
-  uint32_t longitudRotateTest = 7;
-  asm_rotatetest (asmRotateTestArrayIn, longitudRotateTest);
 
   while (1)
   {
