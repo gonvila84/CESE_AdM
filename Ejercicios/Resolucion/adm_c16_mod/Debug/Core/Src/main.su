@@ -1,8 +1,8 @@
 ../Core/Src/main.c:26:13:PrivilegiosSVC	40	static,ignoring_inline_asm
-../Core/Src/main.c:39:5:main	264	dynamic
-../Core/Src/main.c:96:6:SystemClock_Config	88	static
-../Core/Src/main.c:142:13:MX_ETH_Init	8	static
-../Core/Src/main.c:191:13:MX_USART3_UART_Init	8	static
-../Core/Src/main.c:224:13:MX_USB_OTG_FS_PCD_Init	8	static
-../Core/Src/main.c:259:13:MX_GPIO_Init	56	static
-../Core/Src/main.c:313:6:Error_Handler	4	static,ignoring_inline_asm
+../Core/Src/main.c:39:5:main	304	dynamic
+../Core/Src/main.c:106:6:SystemClock_Config	88	static
+../Core/Src/main.c:152:13:MX_ETH_Init	8	static
+../Core/Src/main.c:201:13:MX_USART3_UART_Init	8	static
+../Core/Src/main.c:234:13:MX_USB_OTG_FS_PCD_Init	8	static
+../Core/Src/main.c:269:13:MX_GPIO_Init	56	static
+../Core/Src/main.c:323:6:Error_Handler	4	static,ignoring_inline_asm

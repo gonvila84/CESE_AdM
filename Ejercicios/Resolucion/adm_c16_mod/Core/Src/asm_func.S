@@ -13,6 +13,7 @@
 .global asm_downsampleM
 .global asm_invertir
 .global	asm_rotatetest
+.global asm_filtroVentana10
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 @ Prototipo en "C":
 @   void asm_svc (void)
@@ -273,16 +274,131 @@
 			bx			lr
 
 
+//void 	asm_filtroVentana10(uint16_t * vectorIn, uint16_t * vectorOut, uint32_t longitudVectorIn);
+// R0, R1 Y R2 ESTAN TOMADOS
+//r3
+//r4
+//r5
+//r6
+
+//.thumb_func
+//	asm_filtroVentana10:
+//		push	{r4,r5,r6,r7,r8}
+//		mov		r8, 0
+//		sub		r2, 1
+
+//		mov		r3, r0				//Copio la direccion base del V a R3
+//		.asm_f10_loop:
+//			ldrh 	r4, [r3]			//Cargo el valor al que apunta R3 a R4
+/*
+			mov		r7, r3
+			.asm_fv10_averageLoop:
+				add		r3, 2
+				ldrh	r5,[r3]
+				add		r4,r5
+				subs 	r6,r3,r7
+				cmp		r6,4
+			blt		.asm_fv10_averageLoop
+			sub		r3, 2
+			mov		r6,#3
+			udiv	r6,r4,r6
+			strh	r6,[r1],2
+			add		r8,1
+			cmp		r8,r2
+		blt		.asm_f10_loop
+		pop		{r4,r5,r6,r7,r8}
+	bx	lr
+*/
+
+
+//R0 - Vin
+//R1 - Vout
+//R2 - longitud
+
+.thumb_func
+	asm_filtroVentana10:
+	push	{r4,r5,r6,r7,r8}
+	sub		r2, 1
+	mov		r3, r0
+	mov		r4, 3
+	.asm_f10_loop:
+	mov		r6, r3
+	mov		r8, 0
+		.asm_f10_avg_loop:
+			mov		r5, 2
+			mul		r5, r2,	r5
+			add		r5, r0, r5
+
+			ldrh	r7,[r3]
+			add		r8,r7
+
+			subs	r5, r3	//Se fija si llego a la ultima direccion
+			bne	.withoutReturn
+
+			cmp		r4, 1	//Se fija si esta recolectando la ultima muestra
+			IT		NE
+			movne	r3, r0
+			b		.toSamplesDecrement
+
+			.withoutReturn:
+
+			cmp		r4, 1	//Se fija si esta recolectando la ultima muestra
+			IT		NE
+			addne	r3, 2
+
+			.toSamplesDecrement:
+			subs	r4, 1
+		bne		.asm_f10_avg_loop
+	mov		r4, 3
+	udiv	r8,r8,r4
+	strh	r8,[r1],2
+	mov		r3, r6
+	mov		r5, 2
+	mul		r5, r2,	r5
+	add		r5, r0, r5
+	subs	r5,r3
+	IT		GT
+	addgt	R3, 2
+bne		.asm_f10_loop
+pop		{r4,r5,r6,r7,r8}
+bx		lr
+		//si no termino de recolectar salta a r0
 
 
 
 
+/*
+	push	{r4,r5,r6,r7,r8}
+	sub		r2,1
+	mul		r5,r2,2
+	add		r3,r0,r5
+	mov		r4,r0
+	mov		r5,3			//Poner aqui las muestras adecuadas
+	mov		r6,0
+	.asm_f10_loop:
+
+		mov		r7,2			//Lo reinicion en 2 en cada iteracion asi lo puedo reutilizar
+		mul		r7,r6
+		add		r4,r0,r7
+
+			mov	r7,1
+			.asm_f10_avg_loop:
+				ldrh	r8,[r4]
+				push	{r7}
+				add 	r7,r8
+				mov		r8,r7
+				pop		{r7}
+				add r7,1
+				cmp r7,r5
+			blt	.asm_f10_avg_loop:
 
 
 
 
+	add		r6,1
+	cmp		r6,r2
+	blt		.asm_f10_loop
 
-
-
-
-
+	pop		{r4,r5,r6,r7,r8}
+	bx		lr
+*/

@@ -69,6 +69,8 @@ int main(void)
   uint16_t escalar_12 = 9;
   asm_productoEscalar12 (&vector_input_12, &vector_output_12, longitud, escalar_12);
 
+
+
   /*Ejercicio 7 Realizar una función que reciba un vector de números signados de 32 bits y devuelva la posición del máximo del vector.*/
   uint32_t 	vector_input_max_32 [] = {-56,-23,-388,-2,-4000};
   uint16_t	longitud_max = 5;
@@ -85,6 +87,14 @@ int main(void)
   uint16_t asmInvertirArrayIn [] = {8,3,4,62,7,1,1};
   uint32_t asmInvertirLongitud = 7;
   asm_invertir (asmInvertirArrayIn, asmInvertirLongitud);
+
+  //5) Realice una función que implemente un filtro de ventana móvil de 10 valores sobre un vector de muestras.
+  //void filtroVentana10(uint16_t * vectorIn, uint16_t * vectorOut, uint32_t longitudVectorIn);
+  uint32_t filtroVentana10_longitud = 10;
+  uint16_t vector_input_filtroVentana10_16bits [] = {1,2,3,4,5,6,7,8,9,10};
+  uint16_t vector_output_filtroVentana10_16bits [10] = {0};
+  asm_filtroVentana10 (vector_input_filtroVentana10_16bits, vector_output_filtroVentana10_16bits, filtroVentana10_longitud);
+
 
 
   while (1)
