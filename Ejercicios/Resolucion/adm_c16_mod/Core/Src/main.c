@@ -2,8 +2,18 @@
 #include "main.h"
 #include "string.h"
 #include "asm_func.h"
+#include "c_func.h"
 
-#define longitudVectorDecimar	7
+//#define	EXECUTE_EXERCISE1
+//#define	EXECUTE_EXERCISE2
+//#define	EXECUTE_EXERCISE3
+//#define	EXECUTE_EXERCISE4
+//#define	EXECUTE_EXERCISE5
+#define	EXECUTE_EXERCISE6
+//#define	EXECUTE_EXERCISE7
+//#define	EXECUTE_EXERCISE8
+//#define	EXECUTE_EXERCISE9
+
 
 ETH_TxPacketConfig TxConfig;
 ETH_DMADescTypeDef  DMARxDscrTab[ETH_RX_DESC_CNT]; /* Ethernet Rx DMA Descriptors */
@@ -36,6 +46,9 @@ static void PrivilegiosSVC (void)
     x = __get_CONTROL ();
 }
 
+
+
+
 int main(void)
 {
 
@@ -48,55 +61,150 @@ int main(void)
 
   PrivilegiosSVC ();
 
-  const uint32_t Resultado = asm_sum (5, 3);
+  /*
+  1) Realizar una función que inicialice un vector con ceros. La función debe tener el siguiente prototipo:
 
-  uint32_t longitud = 6;
+  void zeros (uint32_t * vector, uint32_t longitud);
+  */
+#ifdef EXECUTE_EXERCISE1
+  uint32_t	c_zeros_vin_uint32 [10];
+  uint32_t	c_zeros_vlong_uint32 = 10;
+  c_zeros	(c_zeros_vin_uint32,c_zeros_vlong_uint32);
 
-  uint32_t vector_input_32 [] = {0,1,2,3,4,5};
-  uint32_t vector_output_32 [longitud];
-  uint32_t escalar_32 = 9;
-  asm_productoEscalar32 (&vector_input_32, &vector_output_32, longitud, escalar_32);
+  uint32_t	asm_zeros_vin_uint32 [10];
+  uint32_t	asm_zeros_vlong_uint32 = 10;
+  asm_zeros	(asm_zeros_vin_uint32,asm_zeros_vlong_uint32);
+#endif
+  /*
+  2) Realizar una función que realice el producto de un vector y un escalar (por ejemplo, podría servir para cambiar el nivel de amplitud de una señal).
 
+  void productoEscalar32 (uint32_t * vectorIn, uint32_t * vectorOut, uint32_t longitud, uint32_t escalar);
+  */
+#ifdef EXECUTE_EXERCISE2
+  uint32_t	c_productoEscalar32_vin_uint32 [10] = {1,2,3,4,5,6,7,8,9,10};
+  uint32_t	c_productoEscalar32_vout_uint32 [10];
+  uint32_t	c_productoEscalar32_vlong_uint32 = 10;
+  uint32_t	c_productoEscalar32_escalar_uint32 = 3;
+  c_productoEscalar32 (c_productoEscalar32_vin_uint32, c_productoEscalar32_vout_uint32 , c_productoEscalar32_vlong_uint32, c_productoEscalar32_escalar_uint32);
 
-  uint16_t vector_input_16 [] = {0,1,2,3,4,150};
-  uint16_t vector_output_16 [longitud];
-  uint16_t escalar_16 = 9;
-  asm_productoEscalar16 (&vector_input_16, &vector_output_16, longitud, escalar_16);
+  uint32_t	asm_productoEscalar32_vin_uint32 [10] = {1,2,3,4,5,6,7,8,9,10};
+  uint32_t	asm_productoEscalar32_vout_uint32 [10];
+  uint32_t	asm_productoEscalar32_vlong_uint32 = 10;
+  uint32_t	asm_productoEscalar32_escalar_uint32 = 3;
+  asm_productoEscalar32 (asm_productoEscalar32_vin_uint32, asm_productoEscalar32_vout_uint32 , asm_productoEscalar32_vlong_uint32, asm_productoEscalar32_escalar_uint32);
+#endif
+  /*
+  3) Adapte la función del ejercicio 2 para realizar operaciones sobre vectores de 16 bits:
 
+  void productoEscalar16 (uint16_t * vectorIn, uint16_t * vectorOut, uint32_t longitud, uint16_t escalar);
+  */
+#ifdef EXECUTE_EXERCISE3
+  uint16_t	c_productoEscalar16_vin_uint16 [10] = {1,2,3,4,5,6,7,8,9,10};
+  uint16_t	c_productoEscalar16_vout_uint16 [10];
+  uint32_t	c_productoEscalar16_vlong_uint32 = 10;
+  uint16_t	c_productoEscalar16_escalar_uint16 = 3;
+  c_productoEscalar16 (c_productoEscalar16_vin_uint16, c_productoEscalar16_vout_uint16, c_productoEscalar16_vlong_uint32, c_productoEscalar16_escalar_uint16);
 
-  uint16_t vector_input_12 [] = {1000,2000,3000,4000,5000,10000};
-  uint16_t vector_output_12 [longitud];
-  uint16_t escalar_12 = 9;
-  asm_productoEscalar12 (&vector_input_12, &vector_output_12, longitud, escalar_12);
+  uint16_t	asm_productoEscalar16_vin_uint16 [10] = {1,2,3,4,5,6,7,8,9,10};
+  uint16_t	asm_productoEscalar16_vout_uint16 [10];
+  uint32_t	asm_productoEscalar16_vlong_uint32 = 10;
+  uint16_t	asm_productoEscalar16_escalar_uint16 = 3;
+  asm_productoEscalar16 (asm_productoEscalar16_vin_uint16, asm_productoEscalar16_vout_uint16, asm_productoEscalar16_vlong_uint32, asm_productoEscalar16_escalar_uint16);
+#endif
+  /*
+  4) Adapte la función del ejercicio 3 para saturar el resultado del producto a 12 bits:
 
+  void productoEscalar12 (uint16_t * vectorIn, uint16_t * vectorOut, uint32_t longitud, uint16_t escalar);
+  */
+#ifdef EXECUTE_EXERCISE4
+  uint16_t	c_productoEscalar12_vin_uint16 [10] = {1,2,50000,4,2000,9062,7,8,9,4096};
+  uint16_t	c_productoEscalar12_vout_uint16 [10];
+  uint32_t	c_productoEscalar12_vlong_uint32 = 10;
+  uint16_t	c_productoEscalar12_escalar_uint16 = 3;
+  c_productoEscalar12 (c_productoEscalar12_vin_uint16, c_productoEscalar12_vout_uint16, c_productoEscalar12_vlong_uint32, c_productoEscalar12_escalar_uint16);
 
+  uint16_t	asm_productoEscalar12_vin_uint16 [10] = {1,2,50000,4,2000,9062,7,8,9,4096};
+  uint16_t	asm_productoEscalar12_vout_uint16 [10];
+  uint32_t	asm_productoEscalar12_vlong_uint32 = 10;
+  uint16_t	asm_productoEscalar12_escalar_uint16 = 3;
+  asm_productoEscalar12 (asm_productoEscalar12_vin_uint16, asm_productoEscalar12_vout_uint16, asm_productoEscalar12_vlong_uint32, asm_productoEscalar12_escalar_uint16);
+#endif
+  /*
+  5) Realice una función que implemente un filtro de ventana móvil de 10 valores sobre un vector de muestras.
 
-  /*Ejercicio 7 Realizar una función que reciba un vector de números signados de 32 bits y devuelva la posición del máximo del vector.*/
-  uint32_t 	vector_input_max_32 [] = {-56,-23,-388,-2,-4000};
-  uint16_t	longitud_max = 5;
-  int32_t	maxReturnValue = asm_max (vector_input_max_32, longitud_max);
+  void filtroVentana10(uint16_t * vectorIn, uint16_t * vectorOut, uint32_t longitudVectorIn);
+  */
+#ifdef EXECUTE_EXERCISE5
+  uint16_t	c_filtroVentana10_vin_uint16 [10] = {1,2,6,20,5,35,7,2,9,100,2,65,25,45,1};
+  uint16_t	c_filtroVentana10_vout_uint16 [10];
+  uint32_t	c_filtroVentana10_vlong_uint32 = 10;
+  c_filtroVentana10 (c_filtroVentana10_vin_uint16, c_filtroVentana10_vout_uint16, c_filtroVentana10_vlong_uint32);
 
-  /*Ejercicio 8 Realizar una función que reciba un vector de muestras signadas de 32 bits y lo decime descartando una cada N muestras.*/
-  uint32_t 	vectorDecimar [] = {8,3,4,62,7,1,1};
-  uint32_t 	vectorDecimado [longitudVectorDecimar] = {0};
-  int32_t	muestrasDescartar = 4;
-  asm_downsampleM (&vectorDecimar, &vectorDecimado, longitudVectorDecimar, muestrasDescartar);
+  uint16_t	asm_filtroVentana10_vin_uint16 [10] = {1,2,6,20,5,35,7,2,9,100,2,65,25,45,1};
+  uint16_t	asm_filtroVentana10_vout_uint16 [10];
+  uint32_t	asm_filtroVentana10_vlong_uint32 = 10;
+  asm_filtroVentana10 (asm_filtroVentana10_vin_uint16, asm_filtroVentana10_vout_uint16, asm_filtroVentana10_vlong_uint32);
+#endif
+  /*
+  6) Realizar una función que reciba un vector de números signados de 32 bits y los “empaquete” en otro vector de 16 bits. La función deberá adecuar los valores de entrada a la nueva precisión.
 
+  void pack32to16 (int32_t * vectorIn, int16_t *vectorOut, uint32_t longitud);
+  */
+#ifdef EXECUTE_EXERCISE6
+  int32_t asm_pack32to16_vin_int32 [10] = {1,2,3,4,5,6,7,8,9,10};
+  int16_t asm_pack32to16_vout_int16 [10];
+  uint32_t asm_pack32to16_vlong_uint32 = 10;
+  asm_pack32to16 (asm_pack32to16_vin_int32, asm_pack32to16_vout_int16, asm_pack32to16_vlong_uint32);
+#endif
+  /*
+  7) Realizar una función que reciba un vector de números signados de 32 bits y devuelva la posición del máximo del vector.
 
-  /*9) Realizar una función que reciba un vector de muestras no signadas de 16 bits e invierta su orden. */
-  uint16_t asmInvertirArrayIn [] = {8,3,4,62,7,1,1};
-  uint32_t asmInvertirLongitud = 7;
-  asm_invertir (asmInvertirArrayIn, asmInvertirLongitud);
+  int32_t max (int32_t * vectorIn, uint32_t longitud);
+  */
+#ifdef EXECUTE_EXERCISE7
+  int32_t asm_max_vin_int32 [10] = {-8,2,40,35,-3,1200,7,96,9,108};
+  uint32_t asm_max_vlong_int32 = 10;
+  int32_t asm_max_returnValue_int32_t = -1;
+  asm_max_returnValue_int32_t = asm_max (asm_max_vin_int32, asm_max_vlong_int32);
 
-  //5) Realice una función que implemente un filtro de ventana móvil de 10 valores sobre un vector de muestras.
-  //void filtroVentana10(uint16_t * vectorIn, uint16_t * vectorOut, uint32_t longitudVectorIn);
-  uint32_t filtroVentana10_longitud = 10;
-  uint16_t vector_input_filtroVentana10_16bits [] = {1,2,3,4,5,6,7,8,9,10};
-  uint16_t vector_output_filtroVentana10_16bits [10] = {0};
-  asm_filtroVentana10 (vector_input_filtroVentana10_16bits, vector_output_filtroVentana10_16bits, filtroVentana10_longitud);
+  int32_t c_max_vin_int32 [10] = {-8,2,40,35,-3,1200,7,96,9,108};
+  int32_t c_max_vlong_int32 = 10;
+  int32_t c_max_returnValue_int32_t = -1;
+  c_max_returnValue_int32_t = c_max (c_max_vin_int32, c_max_vlong_int32);
+#endif
+  /*
+  8) Realizar una función que reciba un vector de muestras signadas de 32 bits y lo decime
+  descartando una cada N muestras.
 
+  void downsampleM (int32_t * vectorIn, int32_t * vectorOut, uint32_t longitud, uint32_t N);
+  */
+#ifdef EXECUTE_EXERCISE8
+  int32_t asm_downsampleM_vin_int32 [10] = {-8,2,40,35,-3,1200,7,96,9,108};
+  int32_t asm_downsampleM_vout_int32 [10] = {0};
+  int32_t asm_downsampleM_longitud_int32 = 10;
+  uint32_t asm_downsampleM_N_uint32 = 2;
+  asm_downsampleM (asm_downsampleM_vin_int32, asm_downsampleM_vout_int32, asm_downsampleM_longitud_int32, asm_downsampleM_N_uint32);
 
+  int32_t c_downsampleM_vin_int32 [10] = {-8,2,40,35,-3,1200,7,96,9,108};
+  int32_t c_downsampleM_vout_int32 [10] = {0};
+  int32_t c_downsampleM_longitud_int32 = 10;
+  uint32_t c_downsampleM_N_uint32 = 2;
+  c_downsampleM (c_downsampleM_vin_int32, c_downsampleM_vout_int32, c_downsampleM_longitud_int32, c_downsampleM_N_uint32);
+#endif
+  /*
+  9) Realizar una función que reciba un vector de muestras no signadas de 16 bits e invierta su orden.
 
+  void invertir (uint16_t * vector, uint32_t longitud);
+  */
+#ifdef EXECUTE_EXERCISE9
+  uint16_t	asm_invertir_vin_uint16 [15] = {1,2,6,20,5,35,7,2,9,100};
+  uint32_t	asm_invertir_vlong_uint32 = 15;
+  asm_invertir (asm_invertir_vin_uint16, asm_invertir_vlong_uint32);
+
+  uint16_t	c_invertir_vin_uint16 [15] = {1,2,6,20,5,35,7,2,9,100};
+  uint32_t	c_invertir_vlong_uint32 = 15;
+  c_invertir (c_invertir_vin_uint16, c_invertir_vlong_uint32);
+#endif
   while (1)
   {
 

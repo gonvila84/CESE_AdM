@@ -14,6 +14,7 @@
 .global asm_invertir
 .global	asm_rotatetest
 .global asm_filtroVentana10
+.global asm_pack32to16
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 @ Prototipo en "C":
 @   void asm_svc (void)
@@ -51,6 +52,11 @@
         @ push {lr} ... pop {pc}
 
 
+/*
+1) Realizar una función que inicialice un vector con ceros. La función debe tener el siguiente prototipo:
+
+void zeros (uint32_t * vector, uint32_t longitud);
+*/
 
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 @ Prototipo en "C":
@@ -81,6 +87,13 @@
         @ push {lr} ... pop {pc}
 
 
+
+/*
+2) Realizar una función que realice el producto de un vector y un escalar (por ejemplo, podría servir para cambiar el nivel de amplitud de una señal).
+
+void productoEscalar32 (uint32_t * vectorIn, uint32_t * vectorOut, uint32_t longitud, uint32_t escalar);
+*/
+
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 @ Prototipo en "C":
 @   void asm_productoEscalar32 (uint32_t * vectorIn, uint32_t * vectorOut, uint32_t longitud, uint32_t escalar)
@@ -103,6 +116,13 @@
         bne		.asm_productoEscalar32_for
         bx lr
 
+
+/*
+3) Adapte la función del ejercicio 2 para realizar operaciones sobre vectores de 16 bits:
+
+void productoEscalar16 (uint16_t * vectorIn, uint16_t * vectorOut, uint32_t longitud, uint16_t escalar);
+*/
+
 .thumb_func
     asm_productoEscalar16:
     	ldrh	r4, [r0]
@@ -114,64 +134,109 @@
         bne		.asm_productoEscalar16_for
         bx lr
 
+/*
+4) Adapte la función del ejercicio 3 para saturar el resultado del producto a 12 bits:
+
+void productoEscalar12 (uint16_t * vectorIn, uint16_t * vectorOut, uint32_t longitud, uint16_t escalar);
+*/
+
 .thumb_func
     asm_productoEscalar12:
-    	push 	{r4}
-    	ldrh	r4, [r0]
-    .asm_productoEscalar12_for:
-		mul		r4, r4, r3
-		mov		r5, #0x0FFF
-		and 	r4, r5
-		strh	r4,	[r1], 2
-		ldrh	r4, [r0,2]!
-        subs	r2, 1
-        bne		.asm_productoEscalar12_for
-        pop		{r4}
-        bx lr
+    push	{r4}
+         .asm_productoEscalar12_loop:
+    		ldrh	r4,[r0],2
+    		mul		r4,r4,r3
+    		usat 	r4,12,r4
+    		strh	r4,[r1],2
+    		subs	r2,1
+    	bne		.asm_productoEscalar12_loop
+    pop		{r4}
+	bx lr
 
-@ 		5) Realice una función que implemente un filtro de ventana móvil de 10 valores sobre un vector de muestras.
-@
-@		void filtroVentana10(uint16_t * vectorIn, uint16_t * vectorOut, uint32_t longitudVectorIn);
+/*
+5) Realice una función que implemente un filtro de ventana móvil de 10 valores sobre un vector de muestras.
 
-@		6) Realizar una función que reciba un vector de números signados de 32 bits y los “empaquete” en
-@		otro vector de 16 bits. La función deberá adecuar los valores de entrada a la nueva precisión.
-@
-@		void pack32to16 (int32_t * vectorIn, int16_t *vectorOut, uint32_t longitud);
+void filtroVentana10(uint16_t * vectorIn, uint16_t * vectorOut, uint32_t longitudVectorIn);
+*/
 
+.thumb_func
+	asm_filtroVentana10:
+	push	{r4,r5,r6,r7,r8}
+	sub		r2, 1
+	mov		r3, r0
+	mov		r4, 3
+	.asm_f10_loop:
+	mov		r6, r3
+	mov		r8, 0
+		.asm_f10_avg_loop:
+			mov		r5, 2
+			mul		r5, r2,	r5
+			add		r5, r0, r5
 
+			ldrh	r7,[r3]
+			add		r8,r7
 
+			subs	r5, r3	//Se fija si llego a la ultima direccion
+			bne	.withoutReturn
 
+			cmp		r4, 1	//Se fija si esta recolectando la ultima muestra
+			IT		NE
+			movne	r3, r0
+			b		.toSamplesDecrement
 
-@ 7) Realizar una función que reciba un vector de números signados de 32 bits y devuelva la posición del máximo del vector.
-@
-@ Prototipo en "C":
-@		int32_t asm_max (int32_t * vectorIn, uint32_t longitud);
-@
-@ Parametros recibidos:
-@   r0: puntero al vector de entrada
-@   r1: longitud
+			.withoutReturn:
+
+			cmp		r4, 1	//Se fija si esta recolectando la ultima muestra
+			IT		NE
+			addne	r3, 2
+
+			.toSamplesDecrement:
+			subs	r4, 1
+		bne		.asm_f10_avg_loop
+	mov		r4, 3
+	udiv	r8,r8,r4
+	strh	r8,[r1],2
+	mov		r3, r6
+	mov		r5, 2
+	mul		r5, r2,	r5
+	add		r5, r0, r5
+	subs	r5,r3
+	IT		GT
+	addgt	R3, 2
+bne		.asm_f10_loop
+pop		{r4,r5,r6,r7,r8}
+bx		lr
+
+/*
+7) Realizar una función que reciba un vector de números signados de 32 bits y devuelva la posición del máximo del vector.
+
+int32_t max (int32_t * vectorIn, uint32_t longitud);
+*/
 
 .thumb_func
 	asm_max:
-		push	{r4}
-		mov		r4, r1
-	.asm_maximoDelVector_loop:
-		ldr 	r2,[r0],#4
+	push	{r4,r5}
+	mov r2,0										//Inicio el contador de iteraciones en 0
+	mov r4,0										//Guardo el maximo valor (inicio en 0)
+	mov r5,0										//Guardo la posicion del maximo valor  (inicio en 0)
+	.asm_max_loop:
+	ldr		r3,[r0],4								//Cargo el valor V[i]
+	cmp		r2,0									//Verifico si estoy en la iteracion 0 (El bloque solo se ejecuta en la primer iteracion)
+	ITT		EQ
+	moveq	r4,r3									//En la iteracion 0 cargo el valor V[i]
+	moveq	r5,r2									//En la iteracion 0 cargo numero de iteracion actual
 
-		cmp		r4, r1
-		IT		EQ
-		moveq	r3, r2
+	cmp		r4,r3									//Comparo el maximo registrado con el valor de V[i]
+	ITT		LT										//Verifico si el maximo es < V[i]
+	movlt	r4,r3									//Si la condicion se cumple cargo el nuevo maximo
+	movlt	r5,r2									//Si la condicion se cumple la posicion del nuevo maximo
 
-		cmp		r3, r2
-		IT		LT
-		movlt	r3, r2
-
-		subs	r1,1						@	Descuento al valor de la longitud para decrementar el loop y actualizo flags
-		bne		.asm_maximoDelVector_loop	@	Si la resta anterior no da 0 me dirjo a una nueva iteracion
-		pop		{r4}
-		push	{r0}
-		mov		r0, r3
-		bx 		lr							@	Salgo de la funcion enviando el valor de retorno
+	add		r2,1									//Incremento el contador de iteraciones en 1
+	cmp		r2,r1									//Me fijo si se alcanzo el maximo de iteraciones comparando con el valor de (Longitud-1)
+	blt		.asm_max_loop							//Si el maximo de iteraciones no se alcanza se vuelve a iterar, sin se sale del loop
+	mov		r0,r5									//Cargo la posicion del valor maximo en R0 y devuelvo a la rutina principal
+	pop	{r4,r5}
+	bx	lr
 
 @ 8) Realizar una función que reciba un vector de muestras signadas de 32 bits y lo decime descartando una cada N muestras.
 @
@@ -223,30 +288,6 @@
 @   r0: puntero al vector
 @   r1: longitud
 
-@ Mis registros:
-@	r2: Registro para almacenar la posicion Vi[i]
-@	r3:	Registro para almacenar la posision Vi[longitud]
-@	r4:	Registro para almacenar el valor de i
-@	r5:
-
-@.thumb_func
-@	asm_invertir:
-@		mov		r4,0
-@	.asm_invertir_loop
-@		ldrh 	r2,[r0],#2
-
-@		sub		r3,1	@decremento longitud
-@		add		r4,1	@incremento i
-@		cmp		r4,r3	@si i>=j salgo del loop
-@		blt		.asm_invertir_loop
-@		bx		lr
-
-
-@void	asm_rotatetest (uint16_t * asmInvertirArrayIn, uint32_t longitud);
-
-//R6 = i
-//R4 = N
-//R5 = Direccion base de Vin
 .thumb_func
 	asm_invertir:
 		push	{r4,r5,r6,r7}
@@ -274,131 +315,16 @@
 			bx			lr
 
 
-//void 	asm_filtroVentana10(uint16_t * vectorIn, uint16_t * vectorOut, uint32_t longitudVectorIn);
-// R0, R1 Y R2 ESTAN TOMADOS
-//r3
-//r4
-//r5
-//r6
-
-//.thumb_func
-//	asm_filtroVentana10:
-//		push	{r4,r5,r6,r7,r8}
-//		mov		r8, 0
-//		sub		r2, 1
-
-//		mov		r3, r0				//Copio la direccion base del V a R3
-//		.asm_f10_loop:
-//			ldrh 	r4, [r3]			//Cargo el valor al que apunta R3 a R4
-/*
-			mov		r7, r3
-			.asm_fv10_averageLoop:
-				add		r3, 2
-				ldrh	r5,[r3]
-				add		r4,r5
-				subs 	r6,r3,r7
-				cmp		r6,4
-			blt		.asm_fv10_averageLoop
-			sub		r3, 2
-			mov		r6,#3
-			udiv	r6,r4,r6
-			strh	r6,[r1],2
-			add		r8,1
-			cmp		r8,r2
-		blt		.asm_f10_loop
-		pop		{r4,r5,r6,r7,r8}
-	bx	lr
-*/
-
-
-//R0 - Vin
-//R1 - Vout
-//R2 - longitud
 
 .thumb_func
-	asm_filtroVentana10:
-	push	{r4,r5,r6,r7,r8}
-	sub		r2, 1
-	mov		r3, r0
-	mov		r4, 3
-	.asm_f10_loop:
-	mov		r6, r3
-	mov		r8, 0
-		.asm_f10_avg_loop:
-			mov		r5, 2
-			mul		r5, r2,	r5
-			add		r5, r0, r5
-
-			ldrh	r7,[r3]
-			add		r8,r7
-
-			subs	r5, r3	//Se fija si llego a la ultima direccion
-			bne	.withoutReturn
-
-			cmp		r4, 1	//Se fija si esta recolectando la ultima muestra
-			IT		NE
-			movne	r3, r0
-			b		.toSamplesDecrement
-
-			.withoutReturn:
-
-			cmp		r4, 1	//Se fija si esta recolectando la ultima muestra
-			IT		NE
-			addne	r3, 2
-
-			.toSamplesDecrement:
-			subs	r4, 1
-		bne		.asm_f10_avg_loop
-	mov		r4, 3
-	udiv	r8,r8,r4
-	strh	r8,[r1],2
-	mov		r3, r6
-	mov		r5, 2
-	mul		r5, r2,	r5
-	add		r5, r0, r5
-	subs	r5,r3
-	IT		GT
-	addgt	R3, 2
-bne		.asm_f10_loop
-pop		{r4,r5,r6,r7,r8}
-bx		lr
-		//si no termino de recolectar salta a r0
-
-
-
-
-/*
-	push	{r4,r5,r6,r7,r8}
 	sub		r2,1
-	mul		r5,r2,2
-	add		r3,r0,r5
-	mov		r4,r0
-	mov		r5,3			//Poner aqui las muestras adecuadas
-	mov		r6,0
-	.asm_f10_loop:
-
-		mov		r7,2			//Lo reinicion en 2 en cada iteracion asi lo puedo reutilizar
-		mul		r7,r6
-		add		r4,r0,r7
-
-			mov	r7,1
-			.asm_f10_avg_loop:
-				ldrh	r8,[r4]
-				push	{r7}
-				add 	r7,r8
-				mov		r8,r7
-				pop		{r7}
-				add r7,1
-				cmp r7,r5
-			blt	.asm_f10_avg_loop:
-
-
-
-
-	add		r6,1
-	cmp		r6,r2
-	blt		.asm_f10_loop
-
-	pop		{r4,r5,r6,r7,r8}
+	asm_pack32to16:
+		.asm_pack32to16_loop:
+		ldr		r3,[r0],4
+		asr		r3,2
+		strh	r3,[r1],2
+		subs 	r2,1
+		bne		.asm_pack32to16_loop
 	bx		lr
-*/
+
+
