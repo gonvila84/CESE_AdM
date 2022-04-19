@@ -1,2 +1,8 @@
 # CESE_AdM
 Repositorio para la materia Arquitectura de microprocesadores
+
+
+Las respuestas a las preguntas requeridas por la catedra se encuentran en un PDF en el directorio raiz.
+
+NOTA:
+LOS EJERCICIOS SE ENCUENTRAN RESUELTOS EN UNA SUB-CARPETA SE UTILIZA COMPILACION CONDICIONAL PARA EJECUTAR UNO U OTRO. LA MISMA SE PUEDE MODIFICAR DESDE LA CABECERA DEL ARCHIVO MAIN (COMENTANDO O DESCOMENTANDO LA DEFINICION DEL EJERCICIO)
