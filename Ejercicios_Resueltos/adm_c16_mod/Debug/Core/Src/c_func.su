@@ -3,6 +3,7 @@
 ../Core/Src/c_func.c:34:6:c_productoEscalar16	32	static
 ../Core/Src/c_func.c:47:6:c_productoEscalar12	32	static
 ../Core/Src/c_func.c:73:6:c_filtroVentana10	48	static
-../Core/Src/c_func.c:101:9:c_max	32	static
-../Core/Src/c_func.c:131:6:c_downsampleM	40	static
-../Core/Src/c_func.c:155:6:c_invertir	32	static
+../Core/Src/c_func.c:101:6:c_pack32to16	32	static
+../Core/Src/c_func.c:114:9:c_max	32	static
+../Core/Src/c_func.c:144:6:c_downsampleM	40	static
+../Core/Src/c_func.c:168:6:c_invertir	32	static

@@ -144,6 +144,10 @@ int main(void)
 
   void filtroVentana10(uint16_t * vectorIn, uint16_t * vectorOut, uint32_t longitudVectorIn);
   */
+
+  //NOTA:
+  //EL CODIGO SE REALIZO DE ACUERDO A LO DEFINIDO EN CLASE UTILIZANDO UNA VENTANA MOVIL DE 3
+
 #ifdef EXECUTE_EXERCISE5
   uint16_t	c_filtroVentana10_vin_uint16 [10] = {1,2,6,20,5,35,7,2,9,100};
   uint16_t	c_filtroVentana10_vout_uint16 [10];
@@ -161,10 +165,15 @@ int main(void)
   void pack32to16 (int32_t * vectorIn, int16_t *vectorOut, uint32_t longitud);
   */
 #ifdef EXECUTE_EXERCISE6
-  int32_t asm_pack32to16_vin_int32 [10] = {1,2,3,4,5,6,7,8,9,10};
+  int32_t asm_pack32to16_vin_int32 [10] = {5000,3500,1500,900,1500,3600,380,490,250,1200};
   int16_t asm_pack32to16_vout_int16 [10];
   uint32_t asm_pack32to16_vlong_uint32 = 10;
   asm_pack32to16 (asm_pack32to16_vin_int32, asm_pack32to16_vout_int16, asm_pack32to16_vlong_uint32);
+
+  int32_t c_pack32to16_vin_int32 [10] = {5000,3500,1500,900,1500,3600,380,490,250,1200};
+  int16_t c_pack32to16_vout_int16 [10];
+  uint32_t c_pack32to16_vlong_uint32 = 10;
+  c_pack32to16 (c_pack32to16_vin_int32, c_pack32to16_vout_int16, c_pack32to16_vlong_uint32);
 #endif
   /*
   7) Realizar una función que reciba un vector de números signados de 32 bits y devuelva la posición del máximo del vector.
@@ -207,12 +216,12 @@ int main(void)
   void invertir (uint16_t * vector, uint32_t longitud);
   */
 #ifdef EXECUTE_EXERCISE9
-  uint16_t	asm_invertir_vin_uint16 [10] = {1,2,3,4,5,6,7,8,9,10};
-  uint32_t	asm_invertir_vlong_uint32 = 10;
+  uint16_t	asm_invertir_vin_uint16 [6] = {1,2,3,4,5,6};
+  uint32_t	asm_invertir_vlong_uint32 = 6;
   asm_invertir (asm_invertir_vin_uint16, asm_invertir_vlong_uint32);
 
-  uint16_t	c_invertir_vin_uint16 [10] = {1,2,3,4,5,6,7,8,9,10};
-  uint32_t	c_invertir_vlong_uint32 = 10;
+  uint16_t	c_invertir_vin_uint16 [6] = {1,2,3,4,5,6};
+  uint32_t	c_invertir_vlong_uint32 = 6;
   c_invertir (c_invertir_vin_uint16, c_invertir_vlong_uint32);
 #endif
   while (1)

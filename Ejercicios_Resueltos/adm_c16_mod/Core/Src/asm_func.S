@@ -107,6 +107,7 @@ void productoEscalar32 (uint32_t * vectorIn, uint32_t * vectorOut, uint32_t long
 
 .thumb_func
     asm_productoEscalar32:
+    	push	{r4}
     	ldr		r4, [r0]
     .asm_productoEscalar32_for:
 		mul		r4, r4, r3
@@ -114,6 +115,7 @@ void productoEscalar32 (uint32_t * vectorIn, uint32_t * vectorOut, uint32_t long
 		ldr		r4, [r0,4]!
         subs	r2, 1
         bne		.asm_productoEscalar32_for
+        pop		{r4}
         bx lr
 
 
@@ -136,6 +138,7 @@ void productoEscalar16 (uint16_t * vectorIn, uint16_t * vectorOut, uint32_t long
 
 .thumb_func
     asm_productoEscalar16:
+    	push	{r4}
     	ldrh	r4, [r0]
     .asm_productoEscalar16_for:
 		mul		r4, r4, r3
@@ -143,6 +146,7 @@ void productoEscalar16 (uint16_t * vectorIn, uint16_t * vectorOut, uint32_t long
 		ldrh	r4, [r0,2]!
         subs	r2, 1
         bne		.asm_productoEscalar16_for
+        pop		{r4}
         bx lr
 
 /*

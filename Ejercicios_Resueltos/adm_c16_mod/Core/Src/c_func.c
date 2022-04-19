@@ -92,6 +92,19 @@ void c_filtroVentana10(uint16_t * vectorIn, uint16_t * vectorOut, uint32_t longi
 	}
 }
 
+/*
+6) Realizar una función que reciba un vector de números signados de 32 bits y los “empaquete” en otro vector de 16 bits. La función deberá adecuar los valores de entrada a la nueva precisión.
+
+void pack32to16 (int32_t * vectorIn, int16_t *vectorOut, uint32_t longitud);
+*/
+
+void c_pack32to16 (int32_t * vectorIn, int16_t *vectorOut, uint32_t longitud)
+{
+	for (int i=0; i< longitud; i++)
+	{
+		vectorOut[i] = vectorIn[i] >> 2;
+	}
+}
 
 /*
 7) Realizar una función que reciba un vector de números signados de 32 bits y devuelva la posición del máximo del vector.
